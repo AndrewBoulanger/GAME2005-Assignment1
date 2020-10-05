@@ -48,6 +48,8 @@ void PlayScene::handleEvents()
 
 void PlayScene::start()
 {
+	m_pBackground = new Background();
+	addChild(m_pBackground);
 	// Player Sprite
 	m_pPlayer = new Player();
 	addChild(m_pPlayer);
