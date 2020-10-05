@@ -7,7 +7,7 @@
 
 const int FPS = 60;
 const int DELAY_TIME = 1000.0f / FPS;
-int SCREENWIDTH = 1000, SCREENHEIGHT = 600;
+int SCREENWIDTH = 800, SCREENHEIGHT = 550;
 
 int main(int argc, char * args[])
 {

@@ -25,6 +25,8 @@ public:
 private:
 	glm::vec2 m_mousePosition;
 
+	Background* m_pBackground;
+
 	// Particle
 	Particle* m_pParticle;
 

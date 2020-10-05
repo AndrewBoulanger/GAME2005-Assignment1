@@ -17,7 +17,7 @@ Background::Background()
 	m_src->h = 1440;
 
 	m_dst->w = 1000;
-	m_dst->h = 600;
+	m_dst->h = 550;
 }
 
 void Background::draw()
