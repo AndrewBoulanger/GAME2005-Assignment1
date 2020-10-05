@@ -7,6 +7,7 @@
 
 const int FPS = 60;
 const int DELAY_TIME = 1000.0f / FPS;
+int SCREENWIDTH = 1000, SCREENHEIGHT = 600;
 
 int main(int argc, char * args[])
 {
@@ -19,7 +20,7 @@ int main(int argc, char * args[])
 	freopen("CON", "w", stdout);
 
 
-	TheGame::Instance()->init("SDLEngine 0.21", 100, 100, 800, 600, false);
+	TheGame::Instance()->init("SDLEngine 0.21", 100, 100, SCREENWIDTH, SCREENHEIGHT, false);
 
 	while (TheGame::Instance()->isRunning())
 	{
