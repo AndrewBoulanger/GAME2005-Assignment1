@@ -130,6 +130,19 @@ void PlayScene::start()
 	m_pInitialVelocityLabel->setParent(this);
 	addChild(m_pInitialVelocityLabel);
 
+	// Instructions
+	m_pInstructionsLabel = new Label("Press (W / S) to change the Target Distance", "Consolas", 15, cyan, glm::vec2(400.0f, 20.0f), 0, false);
+	m_pInstructionsLabel->setParent(this);
+	addChild(m_pInstructionsLabel);
+
+	m_pInstructionsLabel2 = new Label("Press (D / A) to change the Initial Velocity", "Consolas", 15, cyan, glm::vec2(400.0f, 40.0f), 0, false);
+	m_pInstructionsLabel2->setParent(this);
+	addChild(m_pInstructionsLabel2);
+
+	m_pPPM = new Label("Scale is 1.0 Pixel Per Meter", "Consolas", 15, cyan, glm::vec2(400.0f, 60.0f), 0, false);
+	m_pPPM->setParent(this);
+	addChild(m_pPPM);
+
 	// Buttons
 	// Sim Reset Button
 	m_pResetButton = new Button("../Assets/textures/GAME2005_RestartButton.png", "restartButton", BACK_BUTTON);
@@ -211,8 +224,8 @@ void PlayScene::incTargetDistance()
 		m_distanceToTarget = ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f);
 
 	// Keeping distance within the screen
-	if (m_distanceToTarget > Config::SCREEN_WIDTH - m_pTarget->getWidth() / 2)
-		m_distanceToTarget = Config::SCREEN_WIDTH - m_pTarget->getWidth() / 2;
+	if (m_distanceToTarget > Config::SCREEN_WIDTH - m_pTarget->getWidth() * 2)
+		m_distanceToTarget = Config::SCREEN_WIDTH - m_pTarget->getWidth() * 2;
 }
 
 void PlayScene::decTargetDistance()

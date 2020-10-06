@@ -50,6 +50,10 @@ private:
 	Label* m_pTargetDistLabel;
 	Label* m_pInitialVelocityLabel;
 
+	Label* m_pInstructionsLabel;
+	Label* m_pInstructionsLabel2;
+	Label* m_pPPM;			// Pixels Per Meter
+
 	// Button* m_pBackButton;
 	// Button* m_pNextButton;
 
