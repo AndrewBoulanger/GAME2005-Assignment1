@@ -9,10 +9,10 @@ Particle::Particle()
 	TextureManager::Instance()->load("../Assets/textures/GAME2005_Detonator.png", "particle");
 
 	// set frame width
-	setWidth(50);
+	setWidth(25);
 
 	// set frame height
-	setHeight(50);
+	setHeight(25);
 
 	reset();
 	getRigidBody()->isColliding = false;
