@@ -89,12 +89,13 @@ void PlayScene::start()
 	TextureManager::Instance()->load("../Assets/textures/Background.jpg", "background");
 	
 	// Default info
-	m_distanceToTarget = 485.0f;
-	m_velocityMag = 95.0f;
-	m_angle = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);		// 9.8 is gravity CHANGE IF Pixels Per Meter CHANGES
-	m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
+	// m_distanceToTarget = 485.0f;
+	// m_velocityMag = 95.0f;
+	// m_angle = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);		// 9.8 is gravity CHANGE IF Pixels Per Meter CHANGES
+	// m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
 	m_playedSim = false;
 	m_time = 0.0f;
+	setToDefaults();
 
 	// Target Sprite
 	m_pTarget = new Target();
@@ -193,6 +194,40 @@ void PlayScene::start()
 	});
 
 	addChild(m_pPlayButton);
+
+	// Sim Defaults Button
+	m_pDefaultButton = new Button("../Assets/textures/GAME2005_DefaultButton.png", "defaultButton", NEXT_BUTTON);
+	m_pDefaultButton->getTransform()->position = glm::vec2(700.0f, 500.0f);
+	m_pDefaultButton->addEventListener(CLICK, [&]()-> void
+	{
+		m_pDefaultButton->setActive(false);
+
+		// Set sim to default values
+		setToDefaults();
+		resetSim();
+	});
+
+	m_pDefaultButton->addEventListener(MOUSE_OVER, [&]()->void
+	{
+		m_pDefaultButton->setAlpha(128);
+	});
+
+	m_pDefaultButton->addEventListener(MOUSE_OUT, [&]()->void
+	{
+		m_pDefaultButton->setAlpha(255);
+	});
+
+	addChild(m_pDefaultButton);
+}
+
+void PlayScene::setToDefaults()
+{
+	m_distanceToTarget = 485.0f;
+	m_velocityMag = 95.0f;
+	m_angle = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);		// 9.8 is gravity CHANGE IF Pixels Per Meter CHANGES
+	m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
+
+	// resetSim();
 }
 
 void PlayScene::resetSim()

@@ -60,8 +60,10 @@ private:
 	// Buttons
 	Button* m_pPlayButton;
 	Button* m_pResetButton;
+	Button* m_pDefaultButton;
 
 	// Functions
+	void setToDefaults();
 	void resetSim();
 	void activateSim();
 
