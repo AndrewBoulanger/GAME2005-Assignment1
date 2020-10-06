@@ -35,7 +35,7 @@ void Button::draw()
 	const auto y = getTransform()->position.y;
 
 	// draw the button
-	TextureManager::Instance()->draw(m_name, x, y, 0, m_alpha, m_isCentered);
+	TextureManager::Instance()->draw(m_name, x, y, getWidth(), getHeight(), 0, m_alpha, m_isCentered);
 }
 
 void Button::update()

@@ -25,7 +25,7 @@ void Player::draw()
 	const auto x = getTransform()->position.x;
 	const auto y = getTransform()->position.y;
 
-	TextureManager::Instance()->draw("circle", x, y, 0, 255, true);
+	TextureManager::Instance()->draw("circle", x, y, getWidth(), getHeight(), 0, 255, true);
 }
 
 void Player::update()

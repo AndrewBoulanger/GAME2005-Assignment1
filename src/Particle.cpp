@@ -23,7 +23,7 @@ Particle::~Particle()
 
 void Particle::draw()
 {
-	TextureManager::Instance()->draw("particle", getTransform()->position.x, getTransform()->position.y, 0.0f, 255, true);
+	TextureManager::Instance()->draw("particle", getTransform()->position.x, getTransform()->position.y, getWidth(), getHeight(), 0.0f, 255, true);
 }
 
 void Particle::update()

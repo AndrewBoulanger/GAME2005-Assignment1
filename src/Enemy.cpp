@@ -23,7 +23,7 @@ void Enemy::draw() {
 	const auto x = getTransform()->position.x;
 	const auto y = getTransform()->position.y;
 
-	TextureManager::Instance()->draw("enemy", x, y, 0, 255, true);
+	TextureManager::Instance()->draw("enemy", x, y,getWidth(), getHeight(), 0, 255, true);
 }
 
 void Enemy::update() {
