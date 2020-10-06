@@ -4,9 +4,9 @@
 
 Target::Target()
 {
-	TextureManager::Instance()->load("../Assets/textures/Circle.png","circle");
+	TextureManager::Instance()->load("../Assets/textures/GAME2005_Target.png","target");
 
-	const auto size = TextureManager::Instance()->getTextureSize("circle");
+	const auto size = TextureManager::Instance()->getTextureSize("target");
 	setWidth(size.x);
 	setHeight(size.y);
 	getTransform()->position = glm::vec2(100.0f + 485.0f, 430.0f);
@@ -26,7 +26,7 @@ void Target::draw()
 	const auto y = getTransform()->position.y;
 
 	// draw the target
-	TextureManager::Instance()->draw("circle", x, y, getWidth(), getHeight(), 0, 255, true);
+	TextureManager::Instance()->draw("target", x, y, getWidth(), getHeight(), 0, 255, true);
 }
 
 void Target::update()
