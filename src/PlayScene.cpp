@@ -41,8 +41,6 @@ void PlayScene::update()
 	m_pTimeLabel->setText("Time Elapsed (s) = " + std::to_string(m_time));
 	m_pTargetDistLabel->setText("Target Distance (m) = " + std::to_string(m_distanceToTarget));
 	m_pInitialVelocityLabel->setText("Initial Velocity (m/s) = " + std::to_string(m_velocityMag));
-
-	// m_pDistanceLabel->setText("Distance = " + std::to_string(m_pPlayer->checkDistance(m_pEnemy)));
 }
 
 void PlayScene::clean()
@@ -54,22 +52,22 @@ void PlayScene::handleEvents()
 {
 	EventManager::Instance().update();
 
-	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_A))
+	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_S))
 	{
 		decVelocity();
 		resetSim();
 	}
-	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_D))
+	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_W))
 	{
 		incVelocity();
 		resetSim();
 	}
-	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_W))
+	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_D))
 	{
 		incTargetDistance();
 		resetSim();
 	}
-	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_S))
+	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_A))
 	{
 		decTargetDistance();
 		resetSim();
@@ -132,11 +130,11 @@ void PlayScene::start()
 	addChild(m_pInitialVelocityLabel);
 
 	// Instructions
-	m_pInstructionsLabel = new Label("Press (W / S) to change the Target Distance", "Consolas", 15, cyan, glm::vec2(400.0f, 20.0f), 0, false);
+	m_pInstructionsLabel = new Label("Press (A / D) to change the Target Distance", "Consolas", 15, cyan, glm::vec2(400.0f, 20.0f), 0, false);
 	m_pInstructionsLabel->setParent(this);
 	addChild(m_pInstructionsLabel);
 
-	m_pInstructionsLabel2 = new Label("Press (D / A) to change the Initial Velocity", "Consolas", 15, cyan, glm::vec2(400.0f, 40.0f), 0, false);
+	m_pInstructionsLabel2 = new Label("Press (W / S) to change the Initial Velocity", "Consolas", 15, cyan, glm::vec2(400.0f, 40.0f), 0, false);
 	m_pInstructionsLabel2->setParent(this);
 	addChild(m_pInstructionsLabel2);
 
@@ -222,6 +220,7 @@ void PlayScene::start()
 
 void PlayScene::setToDefaults()
 {
+	// Default Values
 	m_distanceToTarget = 485.0f;
 	m_velocityMag = 95.0f;
 	m_angle = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);		// 9.8 is gravity CHANGE IF Pixels Per Meter CHANGES
