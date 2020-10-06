@@ -3,7 +3,7 @@
 
 #define DELTA_TIME 1.0f / 60.0f
 #define FLOOR_HEIGHT 430.0f
-#define INITIAL_POSITION 25.0f
+#define INITIAL_POSITION 30.0f
 
 Particle::Particle()
 {

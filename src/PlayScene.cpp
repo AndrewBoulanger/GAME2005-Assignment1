@@ -14,6 +14,7 @@ PlayScene::~PlayScene()
 void PlayScene::draw()
 {
 	TextureManager::Instance()->draw("background", 0, 0,1000,550);
+	TextureManager::Instance()->draw("wookie", m_startingPos - 35, 400,60,65, 0.0f, 255, false, SDL_FLIP_HORIZONTAL);
 	drawDisplayList();
 }
 
@@ -85,6 +86,7 @@ void PlayScene::start()
 	/*m_pBackground = new Background();
 	addChild(m_pBackground);*/
 	TextureManager::Instance()->load("../Assets/textures/Background.jpg", "background");
+	TextureManager::Instance()->load("../Assets/textures/Wookie.png", "wookie");
 	
 	// Default info
 	// m_distanceToTarget = 485.0f;
