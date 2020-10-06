@@ -13,6 +13,7 @@ PlayScene::~PlayScene()
 
 void PlayScene::draw()
 {
+	TextureManager::Instance()->draw("background", 0, 0,900,550);
 	drawDisplayList();
 }
 
@@ -68,9 +69,10 @@ void PlayScene::handleEvents()
 void PlayScene::start()
 {
 
-	m_pBackground = new Background();
-	addChild(m_pBackground);
-
+	/*m_pBackground = new Background();
+	addChild(m_pBackground);*/
+	TextureManager::Instance()->load("../Assets/textures/Background.jpg", "background");
+	
 	// Default info
 	m_distanceToTarget = 485.0f;
 	m_velocityMag = 95.0f;
