@@ -9,7 +9,7 @@ Target::Target()
 	const auto size = TextureManager::Instance()->getTextureSize("circle");
 	setWidth(size.x);
 	setHeight(size.y);
-	getTransform()->position = glm::vec2(100.0f, 100.0f);
+	getTransform()->position = glm::vec2(100.0f + 485.0f, 430.0f);
 	getRigidBody()->velocity = glm::vec2(0, 0);
 	getRigidBody()->isColliding = false;
 
@@ -31,8 +31,8 @@ void Target::draw()
 
 void Target::update()
 {
-	m_move();
-	m_checkBounds();
+	// m_move();
+	// m_checkBounds();
 }
 
 void Target::clean()
@@ -41,7 +41,7 @@ void Target::clean()
 
 void Target::m_move()
 {
-	getTransform()->position = getTransform()->position + getRigidBody()->velocity * 5.0f;
+	// getTransform()->position = getTransform()->position + getRigidBody()->velocity * 5.0f;
 }
 
 void Target::m_checkBounds()

@@ -7,8 +7,9 @@
 #include "Player.h"
 #include "Button.h"
 #include "Enemy.h"
-#include "Background.h"
+// #include "Background.h"
 #include "Particle.h"
+#include "Target.h"
 
 class PlayScene : public Scene
 {
@@ -25,10 +26,13 @@ public:
 private:
 	glm::vec2 m_mousePosition;
 
-	Background* m_pBackground;
+	// Background* m_pBackground;
 
 	// Particle
 	Particle* m_pParticle;
+
+	// Target
+	Target* m_pTarget;
 
 	// Variables for changing simulation
 	glm::vec2 m_direction;
@@ -43,6 +47,8 @@ private:
 	Label* m_pdeltaYLabel;
 	Label* m_pAngleLabel;
 	Label* m_pTimeLabel;
+	Label* m_pTargetDistLabel;
+	Label* m_pInitialVelocityLabel;
 
 	// Button* m_pBackButton;
 	// Button* m_pNextButton;
@@ -54,6 +60,12 @@ private:
 	// Functions
 	void resetSim();
 	void activateSim();
+
+	void incTargetDistance();
+	void decTargetDistance();
+
+	void incVelocity();
+	void decVelocity();
 };
 
 #endif /* defined (__PLAY_SCENE__) */

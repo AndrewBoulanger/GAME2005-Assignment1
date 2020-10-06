@@ -25,6 +25,7 @@ void PlayScene::update()
 		m_angle = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);
 		m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
 		m_pParticle->getRigidBody()->velocity = m_velocityMag * m_direction;
+		m_pTarget->getTransform()->position.x = m_distanceToTarget + 100.0f;
 	}
 	else
 	{
@@ -38,6 +39,8 @@ void PlayScene::update()
 	m_pdeltaYLabel->setText("DeltaY (m) = " + std::to_string(-m_pParticle->getTransform()->position.y + 430.0f));		// 430 is the ground (Remember to chagne if ground height does)
 	m_pAngleLabel->setText("Angle (degrees) = " + std::to_string(m_angle));
 	m_pTimeLabel->setText("Time Elapsed (s) = " + std::to_string(m_time));
+	m_pTargetDistLabel->setText("Target Distance (m) = " + std::to_string(m_distanceToTarget));
+	m_pInitialVelocityLabel->setText("Initial Velocity (m/s) = " + std::to_string(m_velocityMag));
 
 	// m_pDistanceLabel->setText("Distance = " + std::to_string(m_pPlayer->checkDistance(m_pEnemy)));
 }
@@ -53,11 +56,23 @@ void PlayScene::handleEvents()
 
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_A))
 	{
-		// m_pPlayer->moveLeft();
+		decVelocity();
+		resetSim();
 	}
 	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_D))
 	{
-		// m_pPlayer->moveRight();
+		incVelocity();
+		resetSim();
+	}
+	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_W))
+	{
+		incTargetDistance();
+		resetSim();
+	}
+	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_S))
+	{
+		decTargetDistance();
+		resetSim();
 	}
 
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_ESCAPE))
@@ -81,6 +96,10 @@ void PlayScene::start()
 	m_playedSim = false;
 	m_time = 0.0f;
 
+	// Target Sprite
+	m_pTarget = new Target();
+	addChild(m_pTarget);
+
 	// Particle Sprite
 	m_pParticle = new Particle();
 	addChild(m_pParticle);
@@ -102,6 +121,14 @@ void PlayScene::start()
 	m_pTimeLabel = new Label("Time Elapsed (s) = ", "Consolas", 20, cyan, glm::vec2(10.0f, 110.0f), 0, false);
 	m_pTimeLabel->setParent(this);
 	addChild(m_pTimeLabel);
+
+	m_pTargetDistLabel = new Label("Target Distance (m) = ", "Consolas", 20, cyan, glm::vec2(10.0f, 140.0f), 0, false);
+	m_pTargetDistLabel->setParent(this);
+	addChild(m_pTargetDistLabel);
+
+	m_pInitialVelocityLabel = new Label("Initial Velocity (m/s) = ", "Consolas", 20, cyan, glm::vec2(10.0f, 170.0f), 0, false);
+	m_pInitialVelocityLabel->setParent(this);
+	addChild(m_pInitialVelocityLabel);
 
 	// Buttons
 	// Sim Reset Button
@@ -172,4 +199,48 @@ void PlayScene::activateSim()
 
 	// Sim is being played
 	m_playedSim = true;
+}
+
+void PlayScene::incTargetDistance()
+{
+	// Increment Distance to Target by 1.0f (m)
+	m_distanceToTarget += 1.0f;
+
+	// Keeping distance within limit of velocity
+	if (m_distanceToTarget > ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f))
+		m_distanceToTarget = ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f);
+
+	// Keeping distance within the screen
+	if (m_distanceToTarget > Config::SCREEN_WIDTH - m_pTarget->getWidth() / 2)
+		m_distanceToTarget = Config::SCREEN_WIDTH - m_pTarget->getWidth() / 2;
+}
+
+void PlayScene::decTargetDistance()
+{
+	// Decrementing Distance to Target by 1.0f (m)
+	m_distanceToTarget -= 1.0f;
+
+	// Keeping Target in front of Starting Particle pos
+	if (m_distanceToTarget < 0.0f)
+		m_distanceToTarget = 0.0f;
+}
+
+void PlayScene::incVelocity()
+{
+	// Incrementing Initial velocity by 0.5f (m/s)
+	m_velocityMag += 0.5f;
+}
+
+void PlayScene::decVelocity()
+{
+	// Decrementing Initial velocity by 0.5f (m/s)
+	m_velocityMag -= 0.5f;
+
+	// Keeping Velocity within minimum to hit Target
+	if (m_velocityMag < glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f)))
+		m_velocityMag = glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f));
+
+	// Keeping Velocity from being negative
+	if (m_velocityMag < 0.0f)
+		m_velocityMag = 0.0f;
 }
