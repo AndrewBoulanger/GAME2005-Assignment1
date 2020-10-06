@@ -67,6 +67,10 @@ void PlayScene::handleEvents()
 
 void PlayScene::start()
 {
+
+	m_pBackground = new Background();
+	addChild(m_pBackground);
+
 	// Default info
 	m_distanceToTarget = 485.0f;
 	m_velocityMag = 95.0f;
@@ -78,14 +82,6 @@ void PlayScene::start()
 	// Particle Sprite
 	m_pParticle = new Particle();
 	addChild(m_pParticle);
-
-	// Player Sprite
-	// m_pPlayer = new Player();
-	// addChild(m_pPlayer);
-	
-	// Enemy Sprite
-	// m_pEnemy = new Enemy();
-	// addChild(m_pEnemy);
 
 	// Labels
 	const SDL_Color blue = { 0, 0, 255, 255 };

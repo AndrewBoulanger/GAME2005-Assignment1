@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Button.h"
 #include "Enemy.h"
+#include "Background.h"
 #include "Particle.h"
 
 class PlayScene : public Scene
@@ -24,6 +25,8 @@ public:
 private:
 	glm::vec2 m_mousePosition;
 
+	Background* m_pBackground;
+
 	// Particle
 	Particle* m_pParticle;
 
@@ -34,10 +37,6 @@ private:
 	float m_distanceToTarget;
 	bool m_playedSim;
 	float m_time;
-
-	// Plane* m_pPlaneSprite;
-	// Player* m_pPlayer;
-	// Enemy* m_pEnemy;
 
 	// Labels
 	Label* m_pdeltaXLabel;
