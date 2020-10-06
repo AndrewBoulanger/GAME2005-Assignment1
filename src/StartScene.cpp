@@ -54,7 +54,7 @@ void StartScene::start()
 	m_pNameLabel1->setParent(this);
 	addChild(m_pNameLabel1);
 
-	m_pNameLabel2 = new Label("Robert Palermo - ", "Consolas", 32, blue, glm::vec2(400.0f, 180.0f));
+	m_pNameLabel2 = new Label("Robert Palermo - 101 277 078", "Consolas", 32, blue, glm::vec2(400.0f, 180.0f));
 	m_pNameLabel2->setParent(this);
 	addChild(m_pNameLabel2);
 

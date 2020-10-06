@@ -84,26 +84,26 @@ void PlayScene::start()
 	addChild(m_pParticle);
 
 	// Labels
-	const SDL_Color blue = { 0, 0, 255, 255 };
-	m_pdeltaXLabel = new Label("Delta X (m) = ", "Consolas", 20, blue, glm::vec2(10.0f, 20.0f), 0, false);
+	const SDL_Color cyan = { 0, 255, 255, 255 };
+	m_pdeltaXLabel = new Label("Delta X (m) = ", "Consolas", 20, cyan, glm::vec2(10.0f, 20.0f), 0, false);
 	m_pdeltaXLabel->setParent(this);
 	addChild(m_pdeltaXLabel);
 
-	m_pdeltaYLabel = new Label("Delta Y (m) = ", "Consolas", 20, blue, glm::vec2(10.0f, 50.0f), 0, false);
+	m_pdeltaYLabel = new Label("Delta Y (m) = ", "Consolas", 20, cyan, glm::vec2(10.0f, 50.0f), 0, false);
 	m_pdeltaYLabel->setParent(this);
 	addChild(m_pdeltaYLabel);
 
-	m_pAngleLabel = new Label("Angle (degrees) = ", "Consolas", 20, blue, glm::vec2(10.0f, 80.0f), 0, false);
+	m_pAngleLabel = new Label("Angle (degrees) = ", "Consolas", 20, cyan, glm::vec2(10.0f, 80.0f), 0, false);
 	m_pAngleLabel->setParent(this);
 	addChild(m_pAngleLabel);
 
-	m_pTimeLabel = new Label("Time Elapsed (s) = ", "Consolas", 20, blue, glm::vec2(10.0f, 110.0f), 0, false);
+	m_pTimeLabel = new Label("Time Elapsed (s) = ", "Consolas", 20, cyan, glm::vec2(10.0f, 110.0f), 0, false);
 	m_pTimeLabel->setParent(this);
 	addChild(m_pTimeLabel);
 
 	// Buttons
 	// Sim Reset Button
-	m_pResetButton = new Button("../Assets/textures/backButton.png", "backButton", BACK_BUTTON);
+	m_pResetButton = new Button("../Assets/textures/GAME2005_RestartButton.png", "restartButton", BACK_BUTTON);
 	m_pResetButton->getTransform()->position = glm::vec2(300.0f, 500.0f);
 	m_pResetButton->addEventListener(CLICK, [&]()-> void
 	{
@@ -126,7 +126,7 @@ void PlayScene::start()
 	addChild(m_pResetButton);
 
 	// Sim Play Button
-	m_pPlayButton = new Button("../Assets/textures/nextButton.png", "nextButton", NEXT_BUTTON);
+	m_pPlayButton = new Button("../Assets/textures/GAME2005_PlayButton.png", "playButton", NEXT_BUTTON);
 	m_pPlayButton->getTransform()->position = glm::vec2(500.0f, 500.0f);
 	m_pPlayButton->addEventListener(CLICK, [&]()-> void
 	{
