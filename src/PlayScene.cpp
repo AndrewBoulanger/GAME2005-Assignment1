@@ -3,6 +3,8 @@
 #include "EventManager.h"
 #include "Util.h"
 
+#define DELAY_PRESS_AMOUNT 6
+
 PlayScene::PlayScene()
 {
 	PlayScene::start();
@@ -61,6 +63,25 @@ void PlayScene::handleEvents()
 {
 	EventManager::Instance().update();
 
+	// Delaying ability to press toggle keys
+	if (m_delayPress <= 0)
+	{
+		if (EventManager::Instance().isKeyDown(SDL_SCANCODE_F))
+		{
+			toggleHigherAngle();
+			resetSim();
+		}
+		else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_R))
+		{
+			toggleLockOn();
+			resetSim();
+		}
+	}
+	else
+	{
+		m_delayPress -= 1;
+	}
+	
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_S))
 	{
 		decVelocity();
@@ -79,16 +100,6 @@ void PlayScene::handleEvents()
 	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_A))
 	{
 		decTargetDistance();
-		resetSim();
-	}
-	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_F))
-	{
-		toggleHigherAngle();
-		resetSim();
-	}
-	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_R))
-	{
-		toggleLockOn();
 		resetSim();
 	}
 	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_Q))
@@ -123,6 +134,7 @@ void PlayScene::start()
 	// m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
 	m_playedSim = false;
 	m_time = 0.0f;
+	m_delayPress = 0;
 	setToDefaults();
 
 	// Target Sprite
@@ -286,6 +298,9 @@ void PlayScene::resetSim()
 	// Reset Time and Sim has not been played yet
 	m_time = 0.0f;
 	m_playedSim = false;
+
+	// Resetting Key press delay
+	m_delayPress = DELAY_PRESS_AMOUNT;
 }
 
 void PlayScene::activateSim()
@@ -312,9 +327,12 @@ void PlayScene::incTargetDistance()
 	// Increment Distance to Target by 1.0f (m)
 	m_distanceToTarget += 1.0f;
 
-	// Keeping distance within limit of velocity
-	if (m_distanceToTarget > ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f))
-		m_distanceToTarget = ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f);
+	if (m_lockOn)
+	{
+		// Keeping distance within limit of velocity
+		if (m_distanceToTarget > ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f))
+			m_distanceToTarget = ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f);
+	}
 
 	// Keeping distance within the screen
 	if (m_distanceToTarget > Config::SCREEN_WIDTH - m_pTarget->getWidth())
@@ -342,9 +360,12 @@ void PlayScene::decVelocity()
 	// Decrementing Initial velocity by 0.5f (m/s)
 	m_velocityMag -= 0.5f;
 
-	// Keeping Velocity within minimum to hit Target
-	if (m_velocityMag < glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f)))
-		m_velocityMag = glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f));
+	if (m_lockOn)
+	{
+		// Keeping Velocity within minimum to hit Target
+		if (m_velocityMag < glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f)))
+			m_velocityMag = glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f));
+	}
 
 	// Keeping Velocity from being negative
 	if (m_velocityMag < 0.0f)

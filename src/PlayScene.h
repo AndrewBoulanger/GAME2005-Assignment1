@@ -44,6 +44,7 @@ private:
 	bool m_lockOn;
 	float m_time;
 	float m_startingPos;
+	int m_delayPress;
 
 	// Labels
 	Label* m_pdeltaXLabel;
