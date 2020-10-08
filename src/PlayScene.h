@@ -41,6 +41,7 @@ private:
 	float m_distanceToTarget;
 	bool m_playedSim;
 	bool m_higherAngle;
+	bool m_lockOn;
 	float m_time;
 	float m_startingPos;
 
@@ -57,6 +58,7 @@ private:
 	Label* m_pInstructionsLabel3;
 	Label* m_pInstructionsLabel4;
 	Label* m_pInstructionsLabel5;
+	Label* m_pToggleInfoLabel;
 	Label* m_pPPM;			// Pixels Per Meter
 
 	// Button* m_pBackButton;
@@ -71,13 +73,18 @@ private:
 	void setToDefaults();
 	void resetSim();
 	void activateSim();
+
 	void toggleHigherAngle();
+	void toggleLockOn();
 
 	void incTargetDistance();
 	void decTargetDistance();
 
 	void incVelocity();
 	void decVelocity();
+
+	void incAngle();
+	void decAngle();
 };
 
 #endif /* defined (__PLAY_SCENE__) */
