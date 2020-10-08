@@ -23,7 +23,8 @@ void PlayScene::update()
 	// If the Particle is not moving, change the starting parameters (For part 2f)
 	if (!m_pParticle->GetIsActive())
 	{
-		m_angle = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);
+		float angleTemp = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);
+		m_angle = (m_higherAngle ? 90.0f - angleTemp : angleTemp);
 		m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
 		m_pParticle->getRigidBody()->velocity = m_velocityMag * m_direction;
 		m_pTarget->getTransform()->position.x = m_distanceToTarget + m_startingPos;
@@ -71,6 +72,11 @@ void PlayScene::handleEvents()
 	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_A))
 	{
 		decTargetDistance();
+		resetSim();
+	}
+	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_F))
+	{
+		toggleHigherAngle();
 		resetSim();
 	}
 
@@ -133,15 +139,27 @@ void PlayScene::start()
 	addChild(m_pInitialVelocityLabel);
 
 	// Instructions
-	m_pInstructionsLabel = new Label("Press (A / D) to change the Target Distance", "Consolas", 15, cyan, glm::vec2(400.0f, 20.0f), 0, false);
+	m_pInstructionsLabel = new Label("Press (A / D) to change the Target Distance", "Consolas", 15, cyan, glm::vec2(500.0f, 20.0f), 0, false);
 	m_pInstructionsLabel->setParent(this);
 	addChild(m_pInstructionsLabel);
 
-	m_pInstructionsLabel2 = new Label("Press (W / S) to change the Initial Velocity", "Consolas", 15, cyan, glm::vec2(400.0f, 40.0f), 0, false);
+	m_pInstructionsLabel2 = new Label("Press (W / S) to change the Initial Velocity", "Consolas", 15, cyan, glm::vec2(500.0f, 40.0f), 0, false);
 	m_pInstructionsLabel2->setParent(this);
 	addChild(m_pInstructionsLabel2);
 
-	m_pPPM = new Label("Scale is 1.0 Pixel Per Meter", "Consolas", 15, cyan, glm::vec2(400.0f, 60.0f), 0, false);
+	m_pInstructionsLabel3 = new Label("Press (F) to toggle between the higher and lower angle", "Consolas", 15, cyan, glm::vec2(500.0f, 60.0f), 0, false);
+	m_pInstructionsLabel3->setParent(this);
+	addChild(m_pInstructionsLabel3);
+
+	m_pInstructionsLabel4 = new Label("Press (R) to toggle lock on mode", "Consolas", 15, cyan, glm::vec2(500.0f, 80.0f), 0, false);
+	m_pInstructionsLabel4->setParent(this);
+	addChild(m_pInstructionsLabel4);
+
+	m_pInstructionsLabel5 = new Label("Press (W / E) to change the Kicking Angle (When not locked on)", "Consolas", 15, cyan, glm::vec2(500.0f, 100.0f), 0, false);
+	m_pInstructionsLabel5->setParent(this);
+	addChild(m_pInstructionsLabel5);
+
+	m_pPPM = new Label("Scale is 1.0 Pixel Per Meter", "Consolas", 15, cyan, glm::vec2(500.0f, 120.0f), 0, false);
 	m_pPPM->setParent(this);
 	addChild(m_pPPM);
 
@@ -228,6 +246,7 @@ void PlayScene::setToDefaults()
 	m_velocityMag = 95.0f;
 	m_angle = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);		// 9.8 is gravity CHANGE IF Pixels Per Meter CHANGES
 	m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
+	m_higherAngle = false;
 
 	// resetSim();
 }
@@ -249,6 +268,11 @@ void PlayScene::activateSim()
 
 	// Sim is being played
 	m_playedSim = true;
+}
+
+void PlayScene::toggleHigherAngle()
+{
+	m_higherAngle = !m_higherAngle;
 }
 
 void PlayScene::incTargetDistance()
