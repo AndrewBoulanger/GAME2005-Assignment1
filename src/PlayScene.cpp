@@ -320,6 +320,13 @@ void PlayScene::toggleHigherAngle()
 void PlayScene::toggleLockOn()
 {
 	m_lockOn = !m_lockOn;
+
+	// Changes Velocity if Target is outside of range
+	if (m_lockOn)
+	{
+		if (m_velocityMag < glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f)))
+			m_velocityMag = glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f));
+	}
 }
 
 void PlayScene::incTargetDistance()
