@@ -41,6 +41,7 @@ private:
 	float m_distanceToTarget;
 	bool m_playedSim;
 	float m_time;
+	float m_startingPos;
 
 	// Labels
 	Label* m_pdeltaXLabel;

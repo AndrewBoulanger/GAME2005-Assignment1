@@ -4,10 +4,10 @@
 #include <Windows.h>
 
 #include "Game.h"
+#include "Config.h"
 
 const int FPS = 60;
 const int DELAY_TIME = 1000.0f / FPS;
-int SCREENWIDTH = 800, SCREENHEIGHT = 550;
 
 int main(int argc, char * args[])
 {
@@ -20,7 +20,7 @@ int main(int argc, char * args[])
 	freopen("CON", "w", stdout);
 
 
-	TheGame::Instance()->init("SDLEngine 0.21", 100, 100, SCREENWIDTH, SCREENHEIGHT, false);
+	TheGame::Instance()->init("SDLEngine 0.21", 100, 100, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, false);
 
 	while (TheGame::Instance()->isRunning())
 	{

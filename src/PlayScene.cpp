@@ -13,7 +13,8 @@ PlayScene::~PlayScene()
 
 void PlayScene::draw()
 {
-	TextureManager::Instance()->draw("background", 0, 0,900,550);
+	TextureManager::Instance()->draw("background", 0, 0,1000,550);
+	TextureManager::Instance()->draw("wookie", m_startingPos - 35, 400,60,65, 0.0f, 255, false, SDL_FLIP_HORIZONTAL);
 	drawDisplayList();
 }
 
@@ -25,7 +26,7 @@ void PlayScene::update()
 		m_angle = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);
 		m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
 		m_pParticle->getRigidBody()->velocity = m_velocityMag * m_direction;
-		m_pTarget->getTransform()->position.x = m_distanceToTarget + 100.0f;
+		m_pTarget->getTransform()->position.x = m_distanceToTarget + m_startingPos;
 	}
 	else
 	{
@@ -35,7 +36,7 @@ void PlayScene::update()
 
 	updateDisplayList();
 
-	m_pdeltaXLabel->setText("DeltaX (m) = " + std::to_string(m_pParticle->getTransform()->position.x - 100.0f));		// 100 is starting pos
+	m_pdeltaXLabel->setText("DeltaX (m) = " + std::to_string(m_pParticle->getTransform()->position.x - m_startingPos));		// 100 is starting pos
 	m_pdeltaYLabel->setText("DeltaY (m) = " + std::to_string(-m_pParticle->getTransform()->position.y + 430.0f));		// 430 is the ground (Remember to chagne if ground height does)
 	m_pAngleLabel->setText("Angle (degrees) = " + std::to_string(m_angle));
 	m_pTimeLabel->setText("Time Elapsed (s) = " + std::to_string(m_time));
@@ -85,6 +86,7 @@ void PlayScene::start()
 	/*m_pBackground = new Background();
 	addChild(m_pBackground);*/
 	TextureManager::Instance()->load("../Assets/textures/Background.jpg", "background");
+	TextureManager::Instance()->load("../Assets/textures/Wookie.png", "wookie");
 	
 	// Default info
 	// m_distanceToTarget = 485.0f;
@@ -102,6 +104,7 @@ void PlayScene::start()
 	// Particle Sprite
 	m_pParticle = new Particle();
 	addChild(m_pParticle);
+	m_startingPos = m_pParticle->getTransform()->position.x;
 
 	// Labels
 	const SDL_Color cyan = { 0, 255, 255, 255 };
@@ -258,8 +261,8 @@ void PlayScene::incTargetDistance()
 		m_distanceToTarget = ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f);
 
 	// Keeping distance within the screen
-	if (m_distanceToTarget > Config::SCREEN_WIDTH - m_pTarget->getWidth() * 2)
-		m_distanceToTarget = Config::SCREEN_WIDTH - m_pTarget->getWidth() * 2;
+	if (m_distanceToTarget > Config::SCREEN_WIDTH - m_pTarget->getWidth())
+		m_distanceToTarget = Config::SCREEN_WIDTH - m_pTarget->getWidth();
 }
 
 void PlayScene::decTargetDistance()

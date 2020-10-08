@@ -3,6 +3,7 @@
 
 #define DELTA_TIME 1.0f / 60.0f
 #define FLOOR_HEIGHT 430.0f
+#define INITIAL_POSITION 30.0f
 
 Particle::Particle()
 {
@@ -50,7 +51,7 @@ void Particle::clean()
 void Particle::reset()
 {
 	m_active = false;
-	getTransform()->position = glm::vec2(100.0f, FLOOR_HEIGHT);
+	getTransform()->position = glm::vec2(INITIAL_POSITION, FLOOR_HEIGHT);
 	getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
 	getRigidBody()->acceleration = glm::vec2(0.0f, 9.8f);	// Set to 9.8 * PixelsPerMeter in the Playscene instead of here
 }
