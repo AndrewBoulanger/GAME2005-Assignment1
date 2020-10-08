@@ -3,6 +3,8 @@
 #include "EventManager.h"
 #include "Util.h"
 
+#define DELAY_PRESS_AMOUNT 6
+
 PlayScene::PlayScene()
 {
 	PlayScene::start();
@@ -23,7 +25,11 @@ void PlayScene::update()
 	// If the Particle is not moving, change the starting parameters (For part 2f)
 	if (!m_pParticle->GetIsActive())
 	{
-		m_angle = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);
+		if (m_lockOn)
+		{
+			float angleTemp = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);
+			m_angle = (m_higherAngle ? 90.0f - angleTemp : angleTemp);
+		}
 		m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
 		m_pParticle->getRigidBody()->velocity = m_velocityMag * m_direction;
 		m_pTarget->getTransform()->position.x = m_distanceToTarget + m_startingPos;
@@ -42,6 +48,10 @@ void PlayScene::update()
 	m_pTimeLabel->setText("Time Elapsed (s) = " + std::to_string(m_time));
 	m_pTargetDistLabel->setText("Target Distance (m) = " + std::to_string(m_distanceToTarget));
 	m_pInitialVelocityLabel->setText("Initial Velocity (m/s) = " + std::to_string(m_velocityMag));
+
+	std::string tempAngle = (m_higherAngle ? "Higher" : "Lower");
+	std::string tempLock = (m_lockOn ? "On" : "Off");
+	m_pToggleInfoLabel->setText("Lock on is " + tempLock + ". Using " + tempAngle + " Angle");
 }
 
 void PlayScene::clean()
@@ -53,6 +63,25 @@ void PlayScene::handleEvents()
 {
 	EventManager::Instance().update();
 
+	// Delaying ability to press toggle keys
+	if (m_delayPress <= 0)
+	{
+		if (EventManager::Instance().isKeyDown(SDL_SCANCODE_F))
+		{
+			toggleHigherAngle();
+			resetSim();
+		}
+		else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_R))
+		{
+			toggleLockOn();
+			resetSim();
+		}
+	}
+	else
+	{
+		m_delayPress -= 1;
+	}
+	
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_S))
 	{
 		decVelocity();
@@ -71,6 +100,16 @@ void PlayScene::handleEvents()
 	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_A))
 	{
 		decTargetDistance();
+		resetSim();
+	}
+	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_Q))
+	{
+		decAngle();
+		resetSim();
+	}
+	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_E))
+	{
+		incAngle();
 		resetSim();
 	}
 
@@ -95,6 +134,7 @@ void PlayScene::start()
 	// m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
 	m_playedSim = false;
 	m_time = 0.0f;
+	m_delayPress = 0;
 	setToDefaults();
 
 	// Target Sprite
@@ -133,17 +173,33 @@ void PlayScene::start()
 	addChild(m_pInitialVelocityLabel);
 
 	// Instructions
-	m_pInstructionsLabel = new Label("Press (A / D) to change the Target Distance", "Consolas", 15, cyan, glm::vec2(400.0f, 20.0f), 0, false);
+	m_pInstructionsLabel = new Label("Press (A / D) to change the Target Distance", "Consolas", 15, cyan, glm::vec2(500.0f, 20.0f), 0, false);
 	m_pInstructionsLabel->setParent(this);
 	addChild(m_pInstructionsLabel);
 
-	m_pInstructionsLabel2 = new Label("Press (W / S) to change the Initial Velocity", "Consolas", 15, cyan, glm::vec2(400.0f, 40.0f), 0, false);
+	m_pInstructionsLabel2 = new Label("Press (W / S) to change the Initial Velocity", "Consolas", 15, cyan, glm::vec2(500.0f, 40.0f), 0, false);
 	m_pInstructionsLabel2->setParent(this);
 	addChild(m_pInstructionsLabel2);
 
-	m_pPPM = new Label("Scale is 1.0 Pixel Per Meter", "Consolas", 15, cyan, glm::vec2(400.0f, 60.0f), 0, false);
+	m_pInstructionsLabel3 = new Label("Press (F) to toggle between the higher and lower angle", "Consolas", 15, cyan, glm::vec2(500.0f, 60.0f), 0, false);
+	m_pInstructionsLabel3->setParent(this);
+	addChild(m_pInstructionsLabel3);
+
+	m_pInstructionsLabel4 = new Label("Press (R) to toggle lock on mode", "Consolas", 15, cyan, glm::vec2(500.0f, 80.0f), 0, false);
+	m_pInstructionsLabel4->setParent(this);
+	addChild(m_pInstructionsLabel4);
+
+	m_pInstructionsLabel5 = new Label("Press (W / E) to change the Kicking Angle (When not locked on)", "Consolas", 15, cyan, glm::vec2(500.0f, 100.0f), 0, false);
+	m_pInstructionsLabel5->setParent(this);
+	addChild(m_pInstructionsLabel5);
+
+	m_pPPM = new Label("Scale is 1.0 Pixel Per Meter", "Consolas", 15, cyan, glm::vec2(500.0f, 120.0f), 0, false);
 	m_pPPM->setParent(this);
 	addChild(m_pPPM);
+
+	m_pToggleInfoLabel = new Label("Lock on is __. Using __ Angle", "Consolas", 20, cyan, glm::vec2(500.0f, 160.0f), 0, false);
+	m_pToggleInfoLabel->setParent(this);
+	addChild(m_pToggleInfoLabel);
 
 	// Buttons
 	// Sim Reset Button
@@ -228,6 +284,8 @@ void PlayScene::setToDefaults()
 	m_velocityMag = 95.0f;
 	m_angle = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);		// 9.8 is gravity CHANGE IF Pixels Per Meter CHANGES
 	m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
+	m_higherAngle = false;
+	m_lockOn = true;
 
 	// resetSim();
 }
@@ -240,6 +298,9 @@ void PlayScene::resetSim()
 	// Reset Time and Sim has not been played yet
 	m_time = 0.0f;
 	m_playedSim = false;
+
+	// Resetting Key press delay
+	m_delayPress = DELAY_PRESS_AMOUNT;
 }
 
 void PlayScene::activateSim()
@@ -251,14 +312,34 @@ void PlayScene::activateSim()
 	m_playedSim = true;
 }
 
+void PlayScene::toggleHigherAngle()
+{
+	m_higherAngle = !m_higherAngle;
+}
+
+void PlayScene::toggleLockOn()
+{
+	m_lockOn = !m_lockOn;
+
+	// Changes Velocity if Target is outside of range
+	if (m_lockOn)
+	{
+		if (m_velocityMag < glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f)))
+			m_velocityMag = glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f));
+	}
+}
+
 void PlayScene::incTargetDistance()
 {
 	// Increment Distance to Target by 1.0f (m)
 	m_distanceToTarget += 1.0f;
 
-	// Keeping distance within limit of velocity
-	if (m_distanceToTarget > ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f))
-		m_distanceToTarget = ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f);
+	if (m_lockOn)
+	{
+		// Keeping distance within limit of velocity
+		if (m_distanceToTarget > ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f))
+			m_distanceToTarget = ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f);
+	}
 
 	// Keeping distance within the screen
 	if (m_distanceToTarget > Config::SCREEN_WIDTH - m_pTarget->getWidth())
@@ -286,11 +367,34 @@ void PlayScene::decVelocity()
 	// Decrementing Initial velocity by 0.5f (m/s)
 	m_velocityMag -= 0.5f;
 
-	// Keeping Velocity within minimum to hit Target
-	if (m_velocityMag < glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f)))
-		m_velocityMag = glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f));
+	if (m_lockOn)
+	{
+		// Keeping Velocity within minimum to hit Target
+		if (m_velocityMag < glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f)))
+			m_velocityMag = glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f));
+	}
 
 	// Keeping Velocity from being negative
 	if (m_velocityMag < 0.0f)
 		m_velocityMag = 0.0f;
+}
+
+void PlayScene::incAngle()
+{
+	// Incrementing Kicking angle by 1.0f (degrees)
+	m_angle += 1.0f;
+
+	// Keeping Angle to right side of wookiee
+	if (m_angle > 90.0f)
+		m_angle = 90.0f;
+}
+
+void PlayScene::decAngle()
+{
+	// Decrementing Kicking angle by 1.0f (degrees)
+	m_angle -= 1.0f;
+
+	// Keeping angle above ground
+	if (m_angle < 0.0f)
+		m_angle = 0.0f;
 }
