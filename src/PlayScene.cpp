@@ -189,7 +189,7 @@ void PlayScene::start()
 	m_pInstructionsLabel4->setParent(this);
 	addChild(m_pInstructionsLabel4);
 
-	m_pInstructionsLabel5 = new Label("Press (W / E) to change the Kicking Angle (When not locked on)", "Consolas", 15, cyan, glm::vec2(500.0f, 100.0f), 0, false);
+	m_pInstructionsLabel5 = new Label("Press (Q / E) to change the Kicking Angle (When not locked on)", "Consolas", 15, cyan, glm::vec2(500.0f, 100.0f), 0, false);
 	m_pInstructionsLabel5->setParent(this);
 	addChild(m_pInstructionsLabel5);
 
