@@ -30,7 +30,7 @@ void PlayScene::update()
 			float angleTemp = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);
 			m_angle = (m_higherAngle ? 90.0f - angleTemp : angleTemp);
 		}
-		m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
+		m_direction = glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle)));  //since we're using cos/sin the vector is already normalized
 		m_pParticle->getRigidBody()->velocity = m_velocityMag * m_direction;
 		m_pTarget->getTransform()->position.x = m_distanceToTarget + m_startingPos;
 	}
@@ -122,8 +122,6 @@ void PlayScene::handleEvents()
 void PlayScene::start()
 {
 
-	/*m_pBackground = new Background();
-	addChild(m_pBackground);*/
 	TextureManager::Instance()->load("../Assets/textures/Background.jpg", "background");
 	TextureManager::Instance()->load("../Assets/textures/Wookie.png", "wookie");
 	
@@ -283,7 +281,7 @@ void PlayScene::setToDefaults()
 	m_distanceToTarget = 485.0f;
 	m_velocityMag = 95.0f;
 	m_angle = (glm::degrees(glm::asin((m_distanceToTarget * 9.8f) / (m_velocityMag * m_velocityMag))) / 2);		// 9.8 is gravity CHANGE IF Pixels Per Meter CHANGES
-	m_direction = Util::normalize(glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle))));
+	m_direction = glm::vec2(glm::cos(glm::radians(m_angle)), -glm::sin(glm::radians(m_angle)));
 	m_higherAngle = false;
 	m_lockOn = true;
 
@@ -324,8 +322,8 @@ void PlayScene::toggleLockOn()
 	// Changes Velocity if Target is outside of range
 	if (m_lockOn)
 	{
-		if (m_velocityMag < glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f)))
-			m_velocityMag = glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f));
+		if (m_velocityMag < glm::sqrt(m_distanceToTarget * 9.8))  //min velocity
+			m_velocityMag = glm::sqrt(m_distanceToTarget * 9.8);
 	}
 }
 
@@ -337,8 +335,8 @@ void PlayScene::incTargetDistance()
 	if (m_lockOn)
 	{
 		// Keeping distance within limit of velocity
-		if (m_distanceToTarget > ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f))
-			m_distanceToTarget = ((m_velocityMag * m_velocityMag * glm::sin(glm::radians(89.9f))) / 9.8f);
+		if (m_distanceToTarget > ((m_velocityMag * m_velocityMag ) / 9.8f))
+			m_distanceToTarget = ((m_velocityMag * m_velocityMag ) / 9.8f);
 	}
 
 	// Keeping distance within the screen
@@ -370,13 +368,13 @@ void PlayScene::decVelocity()
 	if (m_lockOn)
 	{
 		// Keeping Velocity within minimum to hit Target
-		if (m_velocityMag < glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f)))
+		if (m_velocityMag < glm::sqrt(m_distanceToTarget * 9.8))
 			m_velocityMag = glm::sqrt(m_distanceToTarget * 9.8) / glm::sin(glm::radians(89.9f));
 	}
 
-	// Keeping Velocity from being negative
-	if (m_velocityMag < 0.0f)
-		m_velocityMag = 0.0f;
+	// Keeping Velocity from being negative or 0
+	if (m_velocityMag < 0.1f)
+		m_velocityMag = 0.1f;
 }
 
 void PlayScene::incAngle()
